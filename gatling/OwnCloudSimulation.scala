@@ -1,50 +1,39 @@
-/**  
- *  @author Iuri Malinoski Teixeira   
+/**
+ *  Version: 0.7
+ *  @author Iuri Malinoski Teixeira
  *  Example to use:
- *  sudo JAVA_OPTS="-Dusers=1 -Dramp=1 -Dhost=localhost -DserverName=owncloud -Duser=iuri -Dpassword=iuri" ./bin/gatling.sh -s OwnCloudSimulation > out.txt && vim out.txt
+ *  JAVA_OPTS="-Dusers=1 -Dramp=1 -Dhost=localhost -DserverName=owncloudv2 -Duser=iuri -Dpassword=iuri" ./bin/gatling.sh -s OwnCloudSimulation > out.txt && vim out.txt
  */
 
-import scala.concurrent.duration._
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
+import io.gatling.core.structure.ChainBuilder
+import io.gatling.http.config.HttpProtocolBuilder
 
-class OwnCloudSimulation extends Simulation {
+object OwnCloudSimulation {
 
-  val nbUsers = Integer.getInteger("users", 1) // Second parameter is the default
-  val myRamp = java.lang.Long.getLong("ramp", 1L) // Second parameter is the default
-  val host = System.getProperty("host")
-  val baseUrl = "http://" + host
-  val serverName = System.getProperty("serverName")
-  val user = System.getProperty("user")
-  val password = System.getProperty("password")
+  var nbUsers: Int = 0
+  var myRamp: Long = 0L
+  var host: String = ""
+  var baseUrl: String = ""
+  var serverName: String = ""
+  var user: String = ""
+  var password: String = ""
+  var httpProtocol: HttpProtocolBuilder = HttpProtocolBuilder.DefaultHttpProtocolBuilder
 
-  val httpProtocol = http
-    .baseURL(baseUrl)
-    .inferHtmlResources()
-    .acceptHeader("*/*")
-    .acceptEncodingHeader("gzip, deflate")
-    .acceptLanguageHeader("en-US,en;q=0.5")
-    .connection("keep-alive")
-    .contentTypeHeader("application/x-www-form-urlencoded; charset=UTF-8")
-    .userAgentHeader("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0")
-
-  var fileTestExtension = ".txt";
-
-  val headers_0 = Map(
+  var headers_0 = Map(
     "Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 
-  val headers_1 = Map(
+  var headers_1 = Map(
     "Pragma" -> "no-cache",
     "X-Requested-With" -> "XMLHttpRequest")
 
-  val headers_2 = Map(
+  var headers_2 = Map(
     "X-Requested-With" -> "XMLHttpRequest")
 
   object Token {
-    //Sample usage (note requesttoken attribute)
-    //.get(uri1 + "/index.php/avatar/iuri/32?requesttoken=${requesttoken}")    
-    val token =
+    def apply() =
       exec(http("request_token")
         .get("/" + serverName + "/index.php")
         .headers(headers_0)
@@ -52,7 +41,8 @@ class OwnCloudSimulation extends Simulation {
   }
 
   object Login {
-    val login =
+
+    def apply(user: String, password: String) =
       exec(http("request_70")
         .post("/" + serverName + "/index.php")
         .headers(headers_0)
@@ -62,33 +52,12 @@ class OwnCloudSimulation extends Simulation {
         .header("requesttoken", "${requesttoken}"))
   }
 
-  object CreateFile {
-
-    val createFile =
-      exec(http("request_CreateFile")
-        .post("/" + serverName + "/index.php/apps/files/ajax/newfile.php")
-        .headers(headers_0)
-        .header("requesttoken", "${requesttoken}") // Included
-        .formParam("dir", "/")
-        .formParam("filename", "${requesttoken}" + fileTestExtension))
-  }
-
   object Logout {
-    val logout =
+
+    def apply() =
       exec(http("request_96")
         .get("/" + serverName + "/index.php?logout=true&requesttoken=${requesttoken}")
         .headers(headers_0))
-  }
-
-  object DropFile {
-
-    val dropFile =
-      exec(http("request_1_drop")
-        .post("/" + serverName + "/index.php/apps/files/ajax/delete.php")
-        .headers(headers_1)
-        .header("requesttoken", "${requesttoken}")
-        .formParam("dir", "/documents")
-        .formParam("files", """["""" + "${requesttoken}-2" + fileTestExtension + """"]"""))
   }
 
   object UploadFile {
@@ -96,10 +65,14 @@ class OwnCloudSimulation extends Simulation {
     val headers_0 = Map(
       "Pragma" -> "no-cache",
       "X-Requested-With" -> "XMLHttpRequest",
-      //"Content-Type" -> "multipart/form-data; boundary=---------------------------6884128904720638791748211959")
       "Content-Type" -> "multipart/form-data; boundary=stringToBeUsedByServerToParseTheFile")
 
-    var content = """
+    def apply(fileName: String, path: String) =
+      exec(http("request_0_upload")
+        .post("/" + serverName + "/index.php/apps/files/ajax/upload.php")
+        .headers(headers_0)
+        .body(StringBody(
+          """
 --stringToBeUsedByServerToParseTheFile
 Content-Disposition: form-data; name="requesttoken"
 
@@ -107,59 +80,105 @@ Content-Disposition: form-data; name="requesttoken"
 --stringToBeUsedByServerToParseTheFile
 Content-Disposition: form-data; name="dir"
 
-/
+""" + path + """
 --stringToBeUsedByServerToParseTheFile
 Content-Disposition: form-data; name="file_directory"
 
 
 --stringToBeUsedByServerToParseTheFile
-Content-Disposition: form-data; name="files[]"; filename="
-""" + "${requesttoken}" + fileTestExtension + """
-"
+Content-Disposition: form-data; name="files[]"; filename="""" + fileName + """
 Content-Type: text/plain
 
-some
-text
---stringToBeUsedByServerToParseTheFile--""";
+some text
 
-    val uploadFile =
-      exec(http("request_0_upload")
-        .post("/" + serverName + "/index.php/apps/files/ajax/upload.php")
-        .headers(headers_0)
-        .body(StringBody(content)) //.check(status.not(200), status.is(200)) // for debug
-        )
+--stringToBeUsedByServerToParseTheFile--
+""")) //.check(status.not(200), status.is(200)) // for debug
+)
   }
 
   object MoveFile {
 
-    val moveFile =
-      exec(http("request_1_move")
+    def apply(fileName: String, origin: String, destination: String) =
+      exec(http("request_move")
         .post("/" + serverName + "/index.php/apps/files/ajax/move.php")
         .headers(headers_1)
         .header("requesttoken", "${requesttoken}")
         .formParam("dir", "/")
-        .formParam("file", "${requesttoken}" + fileTestExtension) // obs.: ${requesttoken} is the file name
-        .formParam("target", "//documents"))
+        .formParam("file", fileName)
+        .formParam("target", destination))
   }
 
   object RenameFile {
 
-    val renameFile =
-      exec(http("request_0_rename")
-        .get("/" + serverName + "/index.php/apps/files/ajax/rename.php?dir=%2Fdocuments&newname=${requesttoken}-2" + fileTestExtension + "&file=${requesttoken}" + fileTestExtension)
+    def apply(oldFileName: String, newFileName: String, path: String) =
+      exec(http("request_rename")
+        .get("/" + serverName + "/index.php/apps/files/ajax/rename.php?dir=" + path + "&newname=" + newFileName + "&file=" + oldFileName)
         .headers(headers_2)
         .header("requesttoken", "${requesttoken}"))
   }
 
-  val scn = scenario("Scenario Name").exec(
-    Token.token,
-    Login.login,
-    //CreateFile.createFile, // Create a file in "/". The file name is based on token ([token].txt, ex.: bf579ddbc0a4cfe5c802.txt)
-    UploadFile.uploadFile, // Upload a file to "/". The file name is the same for CreateFile
-    MoveFile.moveFile, // Move the file to "/Documents"
-    RenameFile.renameFile, // Rename the file [token] to [token]new in "/documents"
-    DropFile.dropFile, // Drop the file in "/documents"
-    Logout.logout)
+  object CreateFile {
 
-  setUp(scn.inject(rampUsers(nbUsers) over (myRamp seconds))).protocols(httpProtocol)
+    def apply(fileName: String, fileExtension: String, path: String) =
+      exec(http("request_CreateFile")
+        .post("/" + serverName + "/index.php/apps/files/ajax/newfile.php")
+        .headers(headers_0)
+        .header("requesttoken", "${requesttoken}") // Included
+        .formParam("dir", path)
+        //.formParam("filename", fileTest)
+        .formParam("filename", fileName + "." + fileExtension))
+  }
+
+  object DropFile {
+
+    def apply(fileName: String, path: String) =
+      exec(http("request_1_drop")
+        .post("/" + serverName + "/index.php/apps/files/ajax/delete.php")
+        .headers(headers_1)
+        .header("requesttoken", "${requesttoken}")
+        .formParam("dir", path)
+        .formParam("files", """["""" + fileName + """"]"""))
+  }
+
+  def apply(baseUrl: String, serverName: String, user: String, password: String, simulation: Iterator[ChainBuilder]) = {
+
+    //Server parameters
+    this.baseUrl = baseUrl
+    this.serverName = serverName
+    this.user = user
+    this.password = password
+
+    //Headers
+    this.headers_0 = Map("Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+    this.headers_1 = Map("Pragma" -> "no-cache", "X-Requested-With" -> "XMLHttpRequest")
+    this.headers_2 = Map("X-Requested-With" -> "XMLHttpRequest")
+
+    //Protocol
+    this.httpProtocol = http
+      .baseURL(baseUrl)
+      .inferHtmlResources()
+      .acceptHeader("*/*")
+      .acceptEncodingHeader("gzip, deflate")
+      .acceptLanguageHeader("en-US,en;q=0.5")
+      .connection("keep-alive")
+      .contentTypeHeader("application/x-www-form-urlencoded; charset=UTF-8")
+      .userAgentHeader("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0")
+    //    //For debug:
+    //    .extraInfoExtractor(extraInfo => List(
+    //      "</br>##### REQUEST #####</br>" + extraInfo.request +
+    //        "</br>##### RESPONSE #####</br>" + extraInfo.response + "</br></br>"))
+
+    //Default action
+    var it: Iterator[ChainBuilder] = Iterator[ChainBuilder]();
+    it = it ++ Iterator[ChainBuilder](this.Token())
+    it = it ++ Iterator[ChainBuilder](this.Login(user, password))
+    //Custon action
+    it = it ++ simulation
+    //Default action
+    it = it ++ Iterator[ChainBuilder](Logout())
+
+    //Build Scenario
+    scenario("ownCloud simulation").exec(it)
+  }
+
 }
