@@ -1,6 +1,7 @@
 /**
  *  MySimulation01 v=0.1 
- *  @author Iuri Malinoski Teixeira *
+ *  @author Iuri Malinoski Teixeira
+ *  Command line example:
  *  JAVA_OPTS="-Dusers=1 -Dramp=1 -DbaseUrl=http://localhost -DserverName=owncloudv2 -Duser=iuri -Dpassword=iuri" ./bin/gatling.sh -s MySimulation01 > out.txt && vim out.txt
  */
 
@@ -21,7 +22,7 @@ class MySimulation01 extends Simulation {
 
   //My simulation
   var simulation: Iterator[ChainBuilder] = Iterator[ChainBuilder]();
-  simulation = simulation ++ Iterator(OwnCloudSimulation.UploadFile("${requesttoken}.txt", "/"))
+  simulation = simulation ++ Iterator(OwnCloudSimulation.UploadFile("${requesttoken}.txt", "/documents"))
   simulation = simulation ++ Iterator(OwnCloudSimulation.DropFile("${requesttoken}.txt", "/documents"))
   
   //Build scenario

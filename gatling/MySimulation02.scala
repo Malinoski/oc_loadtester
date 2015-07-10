@@ -1,6 +1,7 @@
 /**
  *  MySimulation02 v=0.1 
- *  @author Iuri Malinoski Teixeira *
+ *  @author Iuri Malinoski Teixeira
+ *  Command line example:
  *  JAVA_OPTS="-Dusers=1 -Dramp=1 -DbaseUrl=http://localhost -DserverName=owncloudv2 -Duser=iuri -Dpassword=iuri" ./bin/gatling.sh -s MySimulation02 > out.txt && vim out.txt
  */
 
