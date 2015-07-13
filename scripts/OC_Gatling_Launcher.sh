@@ -20,7 +20,8 @@ GATLING_SIMULATIONS_DIR=$GATLING_HOME/user-files/simulations
 GATLING_RUNNER=$GATLING_HOME/bin/gatling.sh
 
 #Change to your simulation class name
-SIMULATION_NAME='MySimulation01'
+SIMULATION_NAME=MySimulation01
+SIMULATION_DIR=$GATLING_SIMULATIONS_DIR/OwnCloudSimulation/gatling/
 
 #No need to change this
 GATLING_REPORT_DIR=$GATLING_HOME/results/
@@ -33,7 +34,7 @@ rm -rf $GATHER_REPORTS_DIR
 mkdir $GATHER_REPORTS_DIR
 rm -rf $GATLING_REPORT_DIR
 
-echo "# Cleaning remote hosts"
+## Cleaning remote hosts
 
 for HOST in "${HOSTS[@]}"
 do
@@ -48,12 +49,12 @@ do
 	ssh -n -f $USER_NAME@$HOST "sh -c 'rm -rf $GATLING_SIMULATIONS_DIR/*' "
 done
 
-echo "# Copying simulations to remote hosts"
+### Copying simulations to remote hosts
 
 for HOST in "${HOSTS[@]}"
 do
 	echo "# Copying simulations to host: $HOST"
-	scp -r $GATLING_SIMULATIONS_DIR/OwnCloudSimulation/gatling/* $USER_NAME@$HOST:$GATLING_SIMULATIONS_DIR
+	scp -r $SIMULATION_DIR* $USER_NAME@$HOST:$GATLING_SIMULATIONS_DIR
 done
 
 ### Run simulations on remote hosts
@@ -62,7 +63,6 @@ for HOST in "${HOSTS[@]}"
 do
 	echo "# Running simulation on host: $HOST"
 ssh -n -f $USER_NAME@$HOST "sh -c 'JAVA_OPTS=\"-Dusers=1 -Dramp=1 -DbaseUrl=http://${HOST} -DserverName=owncloud -Duser=admin -Dpassword=admin\" nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
-# ssh -n -f $USER_NAME@$HOST "sh -c 'JAVA_OPTS=\"-Dusers=10 -Dramp=10 -Dhost=${HOST} -DserverName=owncloud -Duser=admin -Dpassword=admin\" nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
 done
 
 ### Waiting simulations finish on remoteHosts
