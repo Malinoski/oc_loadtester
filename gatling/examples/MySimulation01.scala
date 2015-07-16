@@ -1,4 +1,4 @@
-//Command line example: $GATLING_HOME/bin/gatling.sh -s MySimulation03 > out.txt && vim out.txt
+//Command line example: JAVA_OPTS="-DbaseUrl=http://localhost" $GATLING_HOME/bin/gatling.sh -s MySimulation01 > out.txt && vim out.txt
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
@@ -11,8 +11,8 @@ class MySimulation01 extends Simulation {
   val nbUsers = 1
   val myRamp: java.lang.Long = 1L
   val simulationName = "My Simulation 03"
-  val baseUrl = "http://localhost"
-  val serverName = "owncloudv2"
+  val baseUrl = System.getProperty("baseUrl")
+  val serverName = "owncloud"
   val user = "iuri"
   val password = "iuri"
 
@@ -26,7 +26,7 @@ class MySimulation01 extends Simulation {
   ocScenarioBuilder.addDropFile("${requesttoken}-renamed.txt", "/")
 
   //Gatling simulation parameters
-  var scenario = ocScenarioBuilder.getScenario()
+  var scenario = ocScenarioBuilder.getScenario() 
   var httpProtocol = ocScenarioBuilder.getHttpProtocol()
 
   //Gatling run

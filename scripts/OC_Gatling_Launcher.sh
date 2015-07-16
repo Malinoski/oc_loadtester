@@ -62,7 +62,7 @@ done
 for HOST in "${HOSTS[@]}"
 do
 	echo "# Running simulation on host: $HOST"
-ssh -n -f $USER_NAME@$HOST "sh -c 'JAVA_OPTS=\"-Dusers=1 -Dramp=1 -DbaseUrl=http://${HOST} -DserverName=owncloud -Duser=admin -Dpassword=admin\" nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
+ssh -n -f $USER_NAME@$HOST "sh -c 'JAVA_OPTS=\"-DbaseUrl=http://${HOST}\" nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
 done
 
 ### Waiting simulations finish on remoteHosts
