@@ -1,5 +1,5 @@
 /**
- *  Version: 0.7
+ *  Version: 0.8
  *  @author Iuri Malinoski Teixeira
  *  Example to use:
  *  JAVA_OPTS="-Dusers=1 -Dramp=1 -Dhost=localhost -DserverName=owncloudv2 -Duser=iuri -Dpassword=iuri" ./bin/gatling.sh -s OwnCloudSimulation > out.txt && vim out.txt
@@ -13,9 +13,6 @@ import io.gatling.http.config.HttpProtocolBuilder
 
 object OwnCloudSimulation {
 
-  var nbUsers: Int = 0
-  var myRamp: Long = 0L
-  var host: String = ""
   var baseUrl: String = ""
   var serverName: String = ""
   var user: String = ""
@@ -139,46 +136,27 @@ some text
         .formParam("dir", path)
         .formParam("files", """["""" + fileName + """"]"""))
   }
+  
+  def apply(simulationName: String, baseUrl: String, serverName: String, user: String, password: String) = {
 
-  def apply(baseUrl: String, serverName: String, user: String, password: String, simulation: Iterator[ChainBuilder]) = {
-
-    //Server parameters
     this.baseUrl = baseUrl
     this.serverName = serverName
     this.user = user
     this.password = password
-
-    //Headers
-    this.headers_0 = Map("Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-    this.headers_1 = Map("Pragma" -> "no-cache", "X-Requested-With" -> "XMLHttpRequest")
-    this.headers_2 = Map("X-Requested-With" -> "XMLHttpRequest")
-
-    //Protocol
     this.httpProtocol = http
-      .baseURL(baseUrl)
-      .inferHtmlResources()
-      .acceptHeader("*/*")
-      .acceptEncodingHeader("gzip, deflate")
-      .acceptLanguageHeader("en-US,en;q=0.5")
-      .connection("keep-alive")
-      .contentTypeHeader("application/x-www-form-urlencoded; charset=UTF-8")
-      .userAgentHeader("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0")
-    //    //For debug:
-    //    .extraInfoExtractor(extraInfo => List(
-    //      "</br>##### REQUEST #####</br>" + extraInfo.request +
-    //        "</br>##### RESPONSE #####</br>" + extraInfo.response + "</br></br>"))
-
-    //Default action
-    var it: Iterator[ChainBuilder] = Iterator[ChainBuilder]();
-    it = it ++ Iterator[ChainBuilder](this.Token())
-    it = it ++ Iterator[ChainBuilder](this.Login(user, password))
-    //Custon action
-    it = it ++ simulation
-    //Default action
-    it = it ++ Iterator[ChainBuilder](Logout())
-
-    //Build Scenario
-    scenario("ownCloud simulation").exec(it)
+    .baseURL(baseUrl)
+    .inferHtmlResources()
+    .acceptHeader("*/*")
+    .acceptEncodingHeader("gzip, deflate")
+    .acceptLanguageHeader("en-US,en;q=0.5")
+    .connection("keep-alive")
+    .contentTypeHeader("application/x-www-form-urlencoded; charset=UTF-8")
+    .userAgentHeader("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0")
+  //    //For debug:
+  //    .extraInfoExtractor(extraInfo => List(
+  //      "</br>##### REQUEST #####</br>" + extraInfo.request +
+  //        "</br>##### RESPONSE #####</br>" + extraInfo.response + "</br></br>"))
+    this
   }
-
+  
 }
