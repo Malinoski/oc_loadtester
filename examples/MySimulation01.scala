@@ -5,7 +5,7 @@ import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 import io.gatling.http.config.HttpProtocolBuilder.toHttpProtocol
 
-class MySimulation03 extends Simulation {
+class MySimulation01 extends Simulation {
 
   //Parameters
   val nbUsers = 1
