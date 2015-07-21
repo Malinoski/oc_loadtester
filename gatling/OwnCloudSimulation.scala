@@ -10,6 +10,7 @@ import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.config.HttpProtocolBuilder
+import io.gatling.http.check.HttpCheck
 
 object OwnCloudSimulation {
 
@@ -23,18 +24,29 @@ object OwnCloudSimulation {
     "Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 
   var headers_1 = Map(
+    "OCS-APIREQUEST" -> "true",
     "Pragma" -> "no-cache",
     "X-Requested-With" -> "XMLHttpRequest")
 
   var headers_2 = Map(
     "X-Requested-With" -> "XMLHttpRequest")
-
+    
+  object setSessionUserId  {
+    def apply() = {
+      exec(session => session.set("userId", session.userId))
+    }  
+  }
+  
   object Token {
     def apply() =
       exec(http("request_token")
         .get("/" + serverName + "/index.php")
         .headers(headers_0)
-        .check(regex("""<head data-requesttoken="([^"]*)">""").saveAs("requesttoken"))) // ex.: <head data-requesttoken="80ffb462c13a0f451a5b">      
+        //.check(proccessRegex()))
+        //.check(proccessRegex()saveAs("requesttoken"))) // ex.: <head data-requesttoken="80ffb462c13a0f451a5b">
+        .check(regex("""<head data-requesttoken="([^"]*)">""")saveAs("requesttoken"))) // ex.: <head data-requesttoken="80ffb462c13a0f451a5b">        
+        //.check(regex("""<head data-requesttoken="([a-zA-Z0-9]*)">""").saveAs("requesttoken"))) // ex.: <head data-requesttoken="80ffb462c13a0f451a5b">
+        //.check(regex("""<head data-requesttoken="^[a-zA-Z]+$">""").saveAs("requesttoken"))) // ex.: <head data-requesttoken="80ffb462c13a0f451a5b">
   }
 
   object Login {
@@ -64,7 +76,11 @@ object OwnCloudSimulation {
       "X-Requested-With" -> "XMLHttpRequest",
       "Content-Type" -> "multipart/form-data; boundary=stringToBeUsedByServerToParseTheFile")
 
+    var token = "${requesttoken}"
+      
     def apply(fileName: String, path: String) =
+      //exec(session => session.set("userId", session.userId))
+      //exec(setSessionUserId())
       exec(http("request_0_upload")
         .post("/" + serverName + "/index.php/apps/files/ajax/upload.php")
         .headers(headers_0)
@@ -73,7 +89,7 @@ object OwnCloudSimulation {
 --stringToBeUsedByServerToParseTheFile
 Content-Disposition: form-data; name="requesttoken"
 
-""" + "${requesttoken}" + """
+""" + token + """
 --stringToBeUsedByServerToParseTheFile
 Content-Disposition: form-data; name="dir"
 

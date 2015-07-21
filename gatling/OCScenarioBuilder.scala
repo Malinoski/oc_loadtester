@@ -2,15 +2,15 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
 import io.gatling.core.structure.ChainBuilder
-import io.gatling.http.config.HttpProtocolBuilder
+import io.gatling.http.config.HttpProtocolBuilder 
 
-class OCScenarioBuilder (simulationName: String, baseUrl: String, serverName: String, user: String, password: String){
+class OCScenarioBuilder (simulationName: String, baseUrl: String, serverName: String, user: String, password: String) extends TScenarioBuilder{
 
-  private var chainBuilderIterator: Iterator[ChainBuilder] = Iterator[ChainBuilder]();
+  ownCloudSimulation = OwnCloudSimulation (simulationName, baseUrl, serverName, user, password)
+  
+  chainBuilderIterator = chainBuilderIterator ++ Iterator[ChainBuilder](ownCloudSimulation.setSessionUserId())
   chainBuilderIterator = chainBuilderIterator ++ Iterator[ChainBuilder](ownCloudSimulation.Token())
   chainBuilderIterator = chainBuilderIterator ++ Iterator[ChainBuilder](ownCloudSimulation.Login(user, password))
-  
-  private var ownCloudSimulation = OwnCloudSimulation (simulationName, baseUrl, serverName, user, password)
 
   //Upload
   def addUploadFile(fileName: String, path: String) {
@@ -37,7 +37,7 @@ class OCScenarioBuilder (simulationName: String, baseUrl: String, serverName: St
       chainBuilderIterator = chainBuilderIterator ++ Iterator(ownCloudSimulation.RenameFile(oldFileName, newFileName, path))
   }
   
-  def getScenario() = {
+  def getScenario() = { 
     var it: Iterator[ChainBuilder] = Iterator[ChainBuilder]();
     it = it ++ chainBuilderIterator
     it = it ++ Iterator[ChainBuilder](ownCloudSimulation.Logout())

@@ -20,7 +20,7 @@ GATLING_SIMULATIONS_DIR=$GATLING_HOME/user-files/simulations
 GATLING_RUNNER=$GATLING_HOME/bin/gatling.sh
 
 #Change to your simulation class name
-SIMULATION_NAME=MySimulation01
+SIMULATION_NAME=MySimulation
 SIMULATION_DIR=$GATLING_SIMULATIONS_DIR/OwnCloudSimulation/gatling/
 
 #No need to change this
