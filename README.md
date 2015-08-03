@@ -6,7 +6,7 @@ This tool was tested on Ubuntu 14.04,  Gatling 2.1.6, ownCloud 7.0.4, ownCloud 8
 
 Some simulation scenarios are provided [here](https://github.com/Malinoski/oc_loadtester/tree/master/gatling/examples).
 
-The script for multiple ownCloud servers (see [here](https://github.com/Malinoski/oc_loadtester/tree/master/script)) modifies the original  [script](https://github.com/gatling/gatling/blob/416fb4364d25085bb207121d8b87e05836e8abb3/src/sphinx/cookbook/code/GatlingScalingOut.sh) provided at the Gatling GitHub repository.
+The script for multiple ownCloud servers (see [here](https://github.com/Malinoski/oc_loadtester/tree/master/scripts)) modifies the original  [script](https://github.com/gatling/gatling/blob/416fb4364d25085bb207121d8b87e05836e8abb3/src/sphinx/cookbook/code/GatlingScalingOut.sh) provided at the Gatling GitHub repository.
 
 ## Instalation
 [TODO]
