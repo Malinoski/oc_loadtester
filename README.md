@@ -2,11 +2,11 @@
 
 ## Description
 The oc_loadtester tool allows customized [Gatling](https://github.com/gatling) simulations to generate load on a single or multiple [ownCloud](https://owncloud.org) servers. 
-The oc_loadtester was tested for Ubuntu 14.04,  Gatling 2.1.6, ownCloud 7.0.4, ownCloud 8.0.3, PostgreSQL 9.3.6 and Java 7.
+This tool was tested on Ubuntu 14.04,  Gatling 2.1.6, ownCloud 7.0.4, ownCloud 8.0.3, PostgreSQL 9.3.6 and Java 7.
 
-The simulation was written in Scala and can be used in custom scenarios (some examples [here](https://github.com/Malinoski/oc_loadtester/tree/master/gatling/examples))
+Some simulation scenarios are provided [here](https://github.com/Malinoski/oc_loadtester/tree/master/gatling/examples).
 
-The script for multiple ownCloud simulation (localized in ./scripts) modifies the original  [script](https://github.com/gatling/gatling/blob/416fb4364d25085bb207121d8b87e05836e8abb3/src/sphinx/cookbook/code/GatlingScalingOut.sh) provided at the Gatling GitHub repository.
+The script for multiple ownCloud servers (see [here](https://github.com/Malinoski/oc_loadtester/tree/master/script)) modifies the original  [script](https://github.com/gatling/gatling/blob/416fb4364d25085bb207121d8b87e05836e8abb3/src/sphinx/cookbook/code/GatlingScalingOut.sh) provided at the Gatling GitHub repository.
 
 ## Instalation
 [TODO]
