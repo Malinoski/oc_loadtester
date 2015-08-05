@@ -1,12 +1,4 @@
 #!/bin/bash
-##################################################################################################################
-#Gatling scale out/cluster run script:
-#Before running this script some assumptions are made:
-#1) Public keys were exchange inorder to ssh with no password promot (ssh-copy-id on all remotes)
-#2) Check  read/write permissions on all folders declared in this script.
-#3) Gatling installation (GATLING_HOME variable) is the same on all hosts
-#4) Assuming all hosts has the same user name (if not change in script)
-##################################################################################################################
 
 #Assuming same user name for all hosts
 USER_NAME='iuri'
@@ -21,7 +13,7 @@ GATLING_RUNNER=$GATLING_HOME/bin/gatling.sh
 
 #Change to your simulation class name
 SIMULATION_NAME=MySimulation
-SIMULATION_DIR=$GATLING_SIMULATIONS_DIR/OwnCloudSimulation/gatling/
+SIMULATION_DIR=$GATLING_SIMULATIONS_DIR/
 
 #No need to change this
 GATLING_REPORT_DIR=$GATLING_HOME/results/
@@ -62,7 +54,7 @@ done
 for HOST in "${HOSTS[@]}"
 do
 	echo "# Running simulation on host: $HOST"
-ssh -n -f $USER_NAME@$HOST "sh -c 'JAVA_OPTS=\"-DbaseUrl=http://${HOST}\" nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
+ssh -n -f $USER_NAME@$HOST "sh -c 'nohup $GATLING_RUNNER -nr -s $SIMULATION_NAME > $GATLING_HOME/run.log 2>&1 &'"
 done
 
 ### Waiting simulations finish on remoteHosts
