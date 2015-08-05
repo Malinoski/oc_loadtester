@@ -60,7 +60,9 @@ The oc_loadtester is executed from local host and the ownCloud servers is instal
 
 - Install oc_loadtester (see section **1.3**)
 
-- Set the remote hosts IPs in the `OC_Gatling_Launcher.sh` script (`HOSTS` variable)
+- Put the scala code folder in Gatling simulation folder (see section **1.4**)
+
+- Configure the required variables in the `OC_Gatling_Launcher.sh` script: `HOSTS`, `USER_NAME`, `USER_NAME` and `SIMULATION_NAME`
  
 **2.8** Run the oc_loadtester from local host, ex.:
 
