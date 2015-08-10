@@ -1,4 +1,4 @@
-# oc_loadtester 0.8.2
+# oc_loadtester 0.8.3
 
 ## Description
 The oc_loadtester tool allows customized [Gatling](https://github.com/gatling) simulations to generate load on a single or multiple [ownCloud](https://owncloud.org) servers. 
