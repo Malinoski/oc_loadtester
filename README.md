@@ -38,7 +38,7 @@ The oc_loadtester is executed in the same host where ownCloud and Gatling are in
 
 ### 2 How to use for multiple ownCloud servers
 
-The oc_loadtester is executed from a local host and the ownCloud servers are installed in remote hosts. Gatling is installed in the local and remote hosts. When the oc_loadtester is executed, the script (OC_Gatling_Launcher.sh) sends the simulation (all scala code) to each Gatling in remote hosts and executes the simulations remotely. The script waits for the simulations to finish, gets the results and generates the final results through Gatling.
+The oc_loadtester is executed from a local host and the ownCloud servers are installed in remote hosts. Gatling is installed in the local and remote hosts. When the oc_loadtester is executed, the script (ScalingOut.sh) sends the simulation (all scala code) to each Gatling in remote hosts and executes the simulations remotely. The script waits for the simulations to finish, gets the results and generates the final results through Gatling.
 
 **2.1** Assuming all hosts have the same user name (if not change the script!)
 
@@ -62,11 +62,11 @@ The oc_loadtester is executed from a local host and the ownCloud servers are ins
 
 - Put the Scala code folder in Gatling simulation folder (see section **1.4**)
 
-- Configure the required variables in the `OC_Gatling_Launcher.sh` script: `HOSTS`, `USER_NAME`, `USER_NAME` and `SIMULATION_NAME`
+- Configure the required variables in the `ScalingOut.sh` script: `HOSTS`, `USER_NAME`, `USER_NAME` and `SIMULATION_NAME`
  
 **2.8** Run the oc_loadtester from local host, eg.:
 
-`# ./oc_loadtester-master/scripts/OC_Gatling_Launcher.sh`
+`# ./oc_loadtester-master/scripts/ScalingOut.sh`
 
 ## Acknowledgements
 This development has been funded by [FINEP](http://www.finep.gov.br), the Brazilian Innovation Agency.

@@ -1,5 +1,4 @@
 /**
- *  Version: 0.8
  *  @author Iuri Malinoski Teixeira
  *  Example to use:
  *  JAVA_OPTS="-Dusers=1 -Dramp=1 -Dhost=localhost -DserverName=owncloudv2 -Duser=iuri -Dpassword=iuri" ./bin/gatling.sh -s OwnCloudSimulation > out.txt && vim out.txt
