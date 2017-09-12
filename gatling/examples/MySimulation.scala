@@ -11,12 +11,13 @@ class MySimulation extends Simulation {
   val myRamp: java.lang.Long = 5L
   val simulationName = "My Simulation"
   val baseUrl = "http://localhost" 
-  val serverName = "owncloud-8.1.0"
+  val serverName = "owncloud"
+  //val serverName = "owncloud-8.1.0"
   //val serverName = "owncloud-8.0.3"
   //val serverName = "owncloud-7.0.4"
   //val serverName = "owncloud-5.0.18"
-  val user = "testuser"
-  val password = "testuser"
+  val user = "admin"
+  val password = "admin"
 
   //My Simulation (note: the "Documents" folder must exist)
   var builder: TScenarioBuilder = new OCScenarioBuilder(simulationName, baseUrl, serverName, user, password)
