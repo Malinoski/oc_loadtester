@@ -4,9 +4,11 @@
 The oc_loadtester tool allows customized [Gatling](https://github.com/gatling) simulations to generate load on a single or multiple [ownCloud](https://owncloud.org) servers. 
 This tool was tested on Ubuntu 14.04,  Gatling 2.1.6, PostgreSQL 9.3.6, Java 7 and the following ownCloud versions: 5.0.18, 7.0.4, 8.0.3 and 8.1.0.
 
-Some simulation scenarios are provided [here](https://github.com/Malinoski/oc_loadtester/tree/master/gatling/examples).
+A example for simulation scenario are provided [here](https://github.com/Malinoski/oc_loadtester/tree/master/gatling/examples).
 
 The script for multiple ownCloud servers (see [here](https://github.com/Malinoski/oc_loadtester/tree/master/scripts)) modifies the original  [script](https://github.com/gatling/gatling/blob/416fb4364d25085bb207121d8b87e05836e8abb3/src/sphinx/cookbook/code/GatlingScalingOut.sh) provided at the Gatling GitHub repository.
+
+Scripts to try (see section 3) a full enviroment using Docker are provided [here](https://github.com/Malinoski/oc_loadtester/tree/master/docker).
 
 ### 1 How to use for a single ownCloud server
 
@@ -67,6 +69,51 @@ The oc_loadtester is executed from a local host and the ownCloud servers are ins
 **2.8** Run the oc_loadtester from local host, eg.:
 
 `# ./oc_loadtester-master/scripts/ScalingOut.sh`
+
+### 3 How to try in Docker environment
+
+The environment is one Docker container, with everything needed to run oc_loadtester (Apache, PHP, PostgreSQL, Java, ownCloud, Gatling and oc_loadtester).
+
+**3.1** In docker host, prepare the work dir, eg.:
+
+`# mkdir owncloud-all-in-one`
+
+`# cd owncloud-all-in-one`
+
+`# wget https://raw.githubusercontent.com/Malinoski/oc_loadtester/master/docker/Dockerfile`
+
+`# wget https://raw.githubusercontent.com/Malinoski/oc_loadtester/master/docker/start.sh`
+
+**3.2** Build the image, eg.:
+
+`# docker build -t owncloud-all-in-one:v1 . `
+
+**3.3** Run a container from the image, eg.:
+
+`docker run -tid -p 82:80 --name="owncloud-aio" owncloud-all-in-one:v1`
+
+**3.4** Configure the ownCloud server
+
+Access http://localhost:82/owncloud and configure as:
+```
+Admin user: admin
+Admin password: admin
+Data folder: /var/www/html/owncloud/data
+Database user: admin
+Database password: admin
+Database name: owncloud
+Database host: localhost
+```
+**3.5** Execute the simulation
+
+Enter the container:
+`# docker exec -it owncloud-aio bash`
+
+Execute the simulation:
+`/var/www/html/gatling-charts-highcharts-bundle-2.1.6/bin/gatling.sh -s MySimulation -rf /var/www/html/`
+
+See the results (change [ID] for the id generated):
+http://localhost/mysimulation-[ID]/index.html
 
 ## Acknowledgements
 This development has been funded by [FINEP](http://www.finep.gov.br), the Brazilian Innovation Agency.
