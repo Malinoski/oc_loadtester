@@ -10,6 +10,8 @@ The script for multiple ownCloud servers (see [here](https://github.com/Malinosk
 
 Scripts to try (see section 3) a full enviroment using Docker are provided [here](https://github.com/Malinoski/oc_loadtester/tree/master/docker).
 
+For data analysis (gnuplot) see [here](https://github.com/Malinoski/oc_loadtester/tree/master/oc_ParserViewer)
+
 ### 1 How to use for a single ownCloud server
 
 The oc_loadtester is executed in the same host where ownCloud and Gatling are installed.
