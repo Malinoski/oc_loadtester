@@ -2,18 +2,18 @@
 # set output 'output.png'
 
 red = "#FF0000"; green = "#00FF00"; blue = "#0000FF"; skyblue = "#87CEEB";
-#set yrange [0:20]
+#set yrange [0:100]
 set style data histogram
-set style histogram cluster gap 1
-set style fill solid
+set style histogram errorbars gap 1 lw 1
+set style fill pattern border -1
 set boxwidth 0.9
-# set xtics format "sec"
+# set ytics format "%"
 set grid ytics
-set ylabel "Seconds"
-set title "Average time response"
+set ylabel "Percents"
+set title "Average success requests"
 set datafile separator ","
-# set format y '%2.0f%%' 
-plot "../data/gatling-data-v7-processed.csv" using 2:xtic(1) title "vm" linecolor rgb red, \
-                                     '' using 7 title "container" linecolor rgb blue, 
+# set format y '%' 
+plot "../data/ro30ra60us100-200-400-600-800-1000-processed-cont.csv" using 2:7:xtic(1) title "container" linecolor rgb blue, \
+     "../data/ro30ra60us100-200-400-600-800-1000-processed-vm.csv"        using 2:7 title "vm" linecolor rgb red, 
 pause -1
 
