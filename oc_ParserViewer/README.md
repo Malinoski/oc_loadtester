@@ -39,7 +39,9 @@ Execute the Java file [OcDataGenerator.java](https://github.com/Malinoski/oc_loa
 The result are:
 
 `data/gatling-result-brute.csv`
+
 `data/gatling-result-processed-cont.csv`
+
 `data/gatling-result-processed-vm.csv`
 
 The first contains the main information of each simulation, the second and third contains averages and pattern deviations.
