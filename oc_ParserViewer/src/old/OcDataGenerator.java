@@ -1,4 +1,4 @@
-package malinoski;
+package old;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,7 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class OcDataGenerator {
 
-	public static void main(String ars[]) {
+	public static void old(String ars[]) {
 		
 		/////////////
 		// Parameters
@@ -30,9 +30,9 @@ public class OcDataGenerator {
 			bruteDataFile = ars[1];
 			processedDataFile = ars[2];
 		}else {
-			gatlingGeneratedDtaPath = "/Users/iuri/gatling-results/gatling-results_v7";
-			bruteDataFile = "data/gatling-data-v7-brute.csv";
-			processedDataFile = "data/gatling-data-v7-processed.csv";
+			gatlingGeneratedDtaPath = "/Users/iuri/gatling-results/gatling-results_v8";
+			bruteDataFile = "data/gatling-data-v8-brute-v2.csv";
+			processedDataFile = "data/gatling-data-v8-processed-v2.csv";
 		}
 		
 		//////////////
@@ -122,14 +122,17 @@ public class OcDataGenerator {
 										}
 										
 										// Columns do CSV
-										line.add(users);
-										line.add(ramp);
-										line.add(machine);
-										line.add(duration);
-										line.add(totalRequest);
-										line.add(ok);
-										line.add( (ok*100)/totalRequest );
-										lines.add(line);		
+										if(ok>0) {
+											line.add(users);
+											line.add(ramp);
+											line.add(machine);
+											line.add(duration);
+											line.add(totalRequest);
+											line.add(ok);
+											line.add( (ok*100)/totalRequest );
+											lines.add(line);
+										}
+												
 										
 									}
 									

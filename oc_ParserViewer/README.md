@@ -6,15 +6,15 @@ The oc_ParserViewer tool allow to generate data and charts from [oc_loadtester](
 
 This tool was tested on macOS Sierra 10.12.6, gnuplot 5.2 patchlevel 2 and Java SE 1.8.
 
-### 1 Generate data
+### 1 Generate the data
 
-Execute the Shell Script [automatedSimulation.sh](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/scripts/automatedSimulation.sh) to generate gatling data (html, json, etc). Ex.: 
+Execute the Shell Script [automatedSimulation.sh](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/scripts/automatedSimulation.sh) to generate gatling data (html, json, etc), ex.: 
 
-`./simulation.sh http://146.134.226.151 vm /srv/www/htdocs/gatling-results_v8 30 60;`
+`/path/to/simulation.sh [container-url] container /path/to/gatling-result 30 120;`
 
-`./simulation.sh http://10.40.0.2:84 container /srv/www/htdocs/gatling-results_v8 30 60`
+`/path/to/simulation.sh [vm url] vm /path/to/gatling-result 30 120`
 
-Each example above executes 30 times the [basic simulation](https://github.com/Malinoski/oc_loadtester/blob/master/gatling/examples/MySimulation.scala) with the following configuration:
+Each example above executes 30 times the [basic simulation](https://github.com/Malinoski/oc_loadtester/blob/master/gatling/examples/MySimulation.scala), in the same directory (`/path/to/gatling-result`) with the following configuration (hard coded in automatedSimulation.sh):
 
 ```
 Ramp		|Users
@@ -26,23 +26,26 @@ Ramp		|Users
 60		|1000
 ```
 
-Note: 100/200/400/600/800/1000 users are hard coded in the Shell Script.
+### 2 Generate the gnuplot charts
 
-### 2 Parse the data
+To generate gnuplot charts from previous datas, is necessary generate some CSV files.
 
-Execute the Java file [OcDataGenerator.java](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/src/malinoski/OcDataGenerator.java) to generate the processed CSV file from the early step.
+#### 2.1 Generate CSV files
 
-### 3 Generate the gnuplot charts
+Execute the Java file [OcDataGenerator.java](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/src/malinoski/OcDataGenerator.java) to generate the processed CSV files. For example, create an executable jar and execute with the necessary parameters:
+`java -jar oc_loader.jar /path/to/gatling-result /path/to/brute.csv /path/to/processed-container.csv /path/to/processed-vm.csv`
 
-Execute the Gnupot Scripts for average success requests ([averageSuccessRequests.gnu](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/gnuplot/averageSuccessRequests.gnu)) and  average time response ([averageTimeResponse.gnu](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/gnuplot/averageTimeResponse.gnu))
+#### 2.2 Generate gnuplot charts
 
-Average success requests sample:
-`mac:gnuplot iuri$ gnuplot averageTimeResponse.gnu`
-![alt text](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/data/averageSuccess.svg)
+Configure the gnuplot script with the processed CSV files, and execute then, ex.:
 
-Average time response sample:
-`mac:gnuplot iuri$ gnuplot averageTimeResponse.gnu`
-![alt text](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/data/averageTimeResponse.svg)
+`gnuplot successRequests.gnu`
+
+`gnuplot timeResponse.gnu`
+
+The result will be like these images:
+![alt text](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/data/ro30ra10us100-200-400-600-800-1000-successRequest.png)
+![alt text](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/data/ro30ra10us100-200-400-600-800-1000-timeResponse.png)
 
 ### Acknowledgements
 This development has been funded by [FINEP](http://www.finep.gov.br), the Brazilian Innovation Agency.
