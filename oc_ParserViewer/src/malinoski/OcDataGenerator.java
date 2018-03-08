@@ -47,29 +47,30 @@ public class OcDataGenerator {
 		String bruteDataFile = ""; 				// csv brute data to be generated
 		String processedContainerFile = ""; 		// csv container process data to be generated
 		String processedVmFile = ""; 			// csv vm process data to be generated
+		String basicNameId = "";
 		if(ars.length != 0) {
-			gatlingGeneratedDtaPath = ars[0];
-			bruteDataFile = ars[1];
-			processedContainerFile = ars[2];
-			processedContainerFile = ars[3];
+			gatlingGeneratedDtaPath = ars[0];			
 		}else {
-			gatlingGeneratedDtaPath = "/Users/iuri/gatling-results/ro30ra60us100-200-400-600-800-1000";
-			bruteDataFile = "data/ro30ra60us100-200-400-600-800-1000-brute.csv";
-			processedContainerFile = "data/ro30ra60us100-200-400-600-800-1000-processed-cont.csv";
-			processedVmFile = "data/ro30ra60us100-200-400-600-800-1000-processed-vm.csv";
+			gatlingGeneratedDtaPath = "/Users/iuri/gatling-results/ro30ra10us100-200-400-600-800-1000";			
 		}
 		
-		System.out.println("Start!");
-		writeBruteCsv(bruteDataFile,gatlingGeneratedDtaPath);
-		addDevioPadrao(bruteDataFile);
-		writeProcessedCsv(bruteDataFile,processedContainerFile, processedVmFile);
-		System.out.println("Finish!");
+		basicNameId = gatlingGeneratedDtaPath.substring(gatlingGeneratedDtaPath.lastIndexOf("/"),gatlingGeneratedDtaPath.length()); // get last folder name
+		bruteDataFile = "data/"+basicNameId+"-brute.csv";
+		processedContainerFile = "data/"+basicNameId+"-processed-cont.csv";
+		processedVmFile = "data/"+basicNameId+"-processed-vm.csv";
 		
+		System.out.println("Start!\n");
+		
+		writeBruteCsv(bruteDataFile,gatlingGeneratedDtaPath);
+		addPatternDeviation(bruteDataFile);
+		writeProcessedCsv(bruteDataFile,processedContainerFile, processedVmFile);
+		
+		System.out.println("Finish!\n");		
 	}
 	
-	private static void addDevioPadrao(String bruteFile) {
+	private static void addPatternDeviation(String bruteFile) {
 		
-		System.out.println("################# Adding pattern deviation to brute file");
+		System.out.println("################# Adding pattern deviation to brute file... \n");
 		
 		/** Read brute csv and save to a complete map */
 		HashMap<String,List<List<Double>>> completeMap = new HashMap<String, List<List<Double>>>();
@@ -240,7 +241,7 @@ public class OcDataGenerator {
 	
 	public static void writeBruteCsv(String bruteDataFile, String gatlingGeneratedDtaPath) {
 		
-		System.out.println("################# Creating Brute CSV");
+		System.out.println("################# Creating Brute CSV... \n");
 		List<Object> lines = new ArrayList<>();	
 		File resultFile = null;
 		File[] resultPaths;
@@ -262,9 +263,8 @@ public class OcDataGenerator {
 						File[] machinePaths;
 						try {
 							
-							// Print and Save result in array
-							System.out.println("#######################");
-							System.out.print("Simulation:"+rampPath+"\n\n");
+							// Print and Save result in array							
+							// System.out.print("#Simulation:"+rampPath+"\n\n");
 							
 							String[] parts = rampPath.toString().split("/");
 													
@@ -403,11 +403,13 @@ public class OcDataGenerator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
+		
+		
 	}
 	
 	public static void writeProcessedCsv(String bruteFile, String processedContainerFile, String processedVmFile) {
 		
-		System.out.println("################# Creating processed CSV files (for container and vm)");
+		System.out.println("################# Creating processed CSV files (for container and vm)... \n");
 		
 		/** Mapping to calc: Read brute csv and save to a complete map */
 		HashMap<String,List<List<Double>>> completeMap = new HashMap<String, List<List<Double>>>();
@@ -551,7 +553,7 @@ public class OcDataGenerator {
 			String header = "# simulation, duration, total-requests, success-requests, success-perc, success-dev, duration-dev";
 			
 			// Creating CSV notes
-			System.out.println(stringKeys);
+			// System.out.println(stringKeys);
 			LinkedHashSet<Integer> contUsers = new LinkedHashSet<>();
 			LinkedHashSet<Integer> vmUsers = new LinkedHashSet<>();
 			String contRamp = "";

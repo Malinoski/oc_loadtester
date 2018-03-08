@@ -33,7 +33,16 @@ To generate gnuplot charts from previous datas, is necessary generate some CSV f
 #### 2.1 Generate CSV files
 
 Execute the Java file [OcDataGenerator.java](https://github.com/Malinoski/oc_loadtester/blob/master/oc_ParserViewer/src/malinoski/OcDataGenerator.java) to generate the processed CSV files. For example, create an executable jar and execute with the necessary parameters:
-`java -jar oc_loader.jar /path/to/gatling-result /path/to/brute.csv /path/to/processed-container.csv /path/to/processed-vm.csv`
+
+`java -jar oc_loader.jar /path/to/gatling-result`
+
+The result are:
+
+`data/gatling-result-brute.csv`
+`data/gatling-result-processed-cont.csv`
+`data/gatling-result-processed-vm.csv`
+
+The first contains the main information of each simulation, the second and third contains averages and pattern deviations.
 
 #### 2.2 Generate gnuplot charts
 
